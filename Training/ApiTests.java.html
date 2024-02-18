@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>ApiTests.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #6897bb;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ApiTests.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">Training</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">io.restassured.http.ContentType</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">models.UserDataDeser</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">models.UserDataSer</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.testng.annotations.Test</span><span class="s0">;</span>
+
+<span class="s0">import static </span><span class="s1">io.restassured.RestAssured.given</span><span class="s0">;</span>
+<span class="s0">import static </span><span class="s1">org.hamcrest.Matchers.*</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">ApiTests {</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">getListOfUsers() {</span>
+        <span class="s1">String endpoint = </span><span class="s2">&quot;https://reqres.in/api/users?page=2&quot;</span><span class="s0">;</span>
+        <span class="s1">var response = given().when().get(endpoint).then()</span><span class="s0">;</span>
+        <span class="s1">response.log().body()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">getSingleUser() {</span>
+        <span class="s1">String endpoint = </span><span class="s2">&quot;https://reqres.in/api/users&quot;</span><span class="s0">;</span>
+        <span class="s1">var response =</span>
+                <span class="s1">given()</span>
+                        <span class="s1">.queryParam(</span><span class="s2">&quot;id&quot;</span><span class="s0">, </span><span class="s3">2</span><span class="s1">)</span>
+                        <span class="s1">.when()</span>
+                        <span class="s1">.get(endpoint)</span>
+                        <span class="s1">.then()</span><span class="s0">;</span>
+        <span class="s1">response.log().body()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">createUser() {</span>
+        <span class="s1">String endpoint = </span><span class="s2">&quot;https://reqres.in/api/users&quot;</span><span class="s0">;</span>
+        <span class="s1">String body = </span><span class="s2">&quot;&quot;&quot; 
+                { 
+                    &quot;name&quot;: &quot;morpheus&quot;, 
+                    &quot;job&quot;: &quot;leader&quot; 
+                } 
+                &quot;&quot;&quot;</span><span class="s0">;</span>
+        <span class="s1">var response = given().body(body).when().post(endpoint).then()</span><span class="s0">;</span>
+        <span class="s1">response.log().all()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">updateUser() {</span>
+        <span class="s1">String endpoint = </span><span class="s2">&quot;https://reqres.in/api/users/2&quot;</span><span class="s0">;</span>
+        <span class="s1">String body = </span><span class="s2">&quot;&quot;&quot; 
+                { 
+                    &quot;name&quot;: &quot;morpheus&quot;, 
+                    &quot;job&quot;: &quot;zion resident&quot; 
+                } 
+                &quot;&quot;&quot;</span><span class="s0">;</span>
+        <span class="s1">var response = given().body(body).when().put(endpoint).then()</span><span class="s0">;</span>
+        <span class="s1">response.log().body()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">deleteUser() {</span>
+        <span class="s1">String endpoint = </span><span class="s2">&quot;https://reqres.in/api/users/2&quot;</span><span class="s0">;</span>
+        <span class="s1">var response = given().when().delete(endpoint).then()</span><span class="s0">;</span>
+        <span class="s1">response.log().all()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s4">//Serialization</span>
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">createUserSerialized() {</span>
+        <span class="s1">String endpoint = </span><span class="s2">&quot;https://reqres.in/api/users&quot;</span><span class="s0">;</span>
+        <span class="s1">UserDataSer userData = </span><span class="s0">new </span><span class="s1">UserDataSer(</span><span class="s2">&quot;may&quot;</span><span class="s0">, </span><span class="s2">&quot;engineer&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">var response = given().body(userData).when().post(endpoint).then()</span><span class="s0">;</span>
+        <span class="s1">response.log().all()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">getSingleUserMatcher() {</span>
+        <span class="s1">String endpoint = </span><span class="s2">&quot;https://reqres.in/api/users&quot;</span><span class="s0">;</span>
+
+        <span class="s1">given()</span>
+                <span class="s1">.queryParam(</span><span class="s2">&quot;id&quot;</span><span class="s0">, </span><span class="s3">2</span><span class="s1">)</span>
+        <span class="s1">.when()</span>
+                <span class="s1">.get(endpoint)</span>
+        <span class="s1">.then()</span>
+              <span class="s1">.assertThat()</span>
+                <span class="s1">.contentType(ContentType.JSON)</span>
+                <span class="s1">.statusCode(</span><span class="s3">200</span><span class="s1">)</span>
+                <span class="s1">.body(</span><span class="s2">&quot;data.id&quot;</span><span class="s0">, </span><span class="s1">equalTo(</span><span class="s3">2</span><span class="s1">))</span>
+                <span class="s1">.body(</span><span class="s2">&quot;data.email&quot;</span><span class="s0">, </span><span class="s1">equalTo(</span><span class="s2">&quot;janet.weaver@reqres.in&quot;</span><span class="s1">))</span>
+                <span class="s1">.body(</span><span class="s2">&quot;data.size()&quot;</span><span class="s0">, </span><span class="s1">greaterThan(</span><span class="s3">0</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s4">//.body(&quot;data.id[0]&quot;, equalTo(2));</span>
+
+
+    <span class="s1">}</span>
+
+    <span class="s4">//Deserialization</span>
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">getSingleUserDeserialized() {</span>
+        <span class="s1">String endpoint = </span><span class="s2">&quot;https://reqres.in/api/users&quot;</span><span class="s0">;</span>
+        <span class="s1">UserDataDeser expected = </span><span class="s0">new </span><span class="s1">UserDataDeser(</span><span class="s3">2</span><span class="s0">,</span><span class="s2">&quot;janet.weaver@reqres.in&quot;</span><span class="s0">,</span><span class="s2">&quot;Janet&quot;</span><span class="s0">,</span><span class="s2">&quot;Weaver&quot;</span><span class="s0">,</span><span class="s2">&quot;https://reqres.in/img/faces/2-image.jpg&quot;</span><span class="s0">,</span><span class="s2">&quot;https://reqres.in/#support-heading&quot;</span><span class="s0">,</span><span class="s2">&quot;To keep ReqRes free,);</span>
+
+
+           <span class="s1">UserDataDeser actual = given()</span>
+                        <span class="s1">.queryParam(</span><span class="s2">&quot;id&quot;</span><span class="s0">, </span><span class="s3">2</span><span class="s1">)</span>
+                        <span class="s1">.when()</span>
+                        <span class="s1">.get(endpoint)</span>
+                        <span class="s1">.as(UserDataDeser.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+
+
+    <span class="s1">}</span>
+
+
+<span class="s1">}</span>
+</pre>
+</body>
+</html>
